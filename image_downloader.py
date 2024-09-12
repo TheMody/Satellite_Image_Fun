@@ -4,6 +4,7 @@ import numpy as np
 from io import BytesIO
 from PIL import Image
 import os
+from config import *
 # Your client credentials
 
 class image_downloader():
@@ -30,10 +31,11 @@ class image_downloader():
 
     def download_image(self,  bbox, time_range, width=512, height=512):
         
-
+        
         # check if image is already downloaded
-        if os.path.exists('images/'+str(bbox)+str(time_range[0])+'_'+str(time_range[1])+str(width)+str(height)+'.png'):
-            img = Image.open('images/'+str(bbox)+str(time_range[0])+'_'+str(time_range[1])+str(width)+str(height)+'.png')
+        if os.path.exists(dataset_path+str(bbox)+str(time_range[0])+'_'+str(time_range[1])+str(width)+str(height)+'.png'):
+            print(dataset_path+str(bbox)+str(time_range[0])+'_'+str(time_range[1])+str(width)+str(height)+'.png')
+            img = Image.open(dataset_path+str(bbox)+str(time_range[0])+'_'+str(time_range[1])+str(width)+str(height)+'.png')
             img = np.array(img)
             img = np.asarray(img, dtype=np.float32)/255.0
             return img
@@ -52,8 +54,7 @@ class image_downloader():
 
             function evaluatePixel(sample) {
             return [2.5 * sample.B04, 2.5 * sample.B03, 2.5 * sample.B02]
-            }
-            """
+            }"""
 
             request = {
                 "input": {
@@ -76,7 +77,13 @@ class image_downloader():
                 "output": {
                     "width": width,
                     "height": height,
-                },
+        #             "responses": [
+        #     {
+        #         "identifier": "default",
+        #         "format": {"type": "image/png"},
+        #     }
+        # ],
+                 },
                 "evalscript": evalscript,
             }
 
@@ -86,7 +93,9 @@ class image_downloader():
             image_data = BytesIO(response.content)
             # Load the image using PIL
             img = Image.open(image_data)
-            img.save('images/'+str(bbox)+str(time_range[0])+'_'+str(time_range[1])+str(width)+str(height)+'.png')
+
+            print(img)
+            img.save(dataset_path+str(bbox)+str(time_range[0])+'_'+str(time_range[1])+str(width)+str(height)+'.png')
 
             img = np.array(img)
             img = np.asarray(img, dtype=np.float32)/255.0
